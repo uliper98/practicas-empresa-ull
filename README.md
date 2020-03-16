@@ -1,8 +1,8 @@
-* [Kaizten Blue Task](kaizten-blue-task)
-* [Kaizten Red Task](kaizten-red-task)
-* [Kaizten Algorithm](kaizten-algorithm)
-  * [Deployment](deployment)
-  * [Stop](stop)
+* [Kaizten Blue Task](#kaizten-blue-task)
+* [Kaizten Red Task](#kaizten-red-task)
+* [Kaizten Algorithm](#kaizten-algorithm)
+  * [Deployment](#deployment)
+  * [Stop](#stop)
 
 
 
