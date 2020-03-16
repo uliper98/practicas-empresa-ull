@@ -1,5 +1,7 @@
 * [Kaizten Blue Task](#kaizten-blue-task)
+  * [Executing algorithm](#executing-algorithm)
 * [Kaizten Red Task](#kaizten-red-task)
+  * [Executing algorithm](#executing-algorithm2)
 * [Kaizten Algorithm](#kaizten-algorithm)
   * [Deployment](#deployment)
   * [Stop](#stop)
