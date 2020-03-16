@@ -1,3 +1,11 @@
+* [Kaizten Blue Task](kaizten-blue-task)
+* [Kaizten Red Task](kaizten-red-task)
+* [Kaizten Algorithm](kaizten-algorithm)
+  * [Deployment](deployment)
+  * [Stop](stop)
+
+
+
 # Kaizten Blue Task
 
 ## Executing algorithm
@@ -139,7 +147,7 @@ Red parameter length: 0
 
 # Kaizten Algorithm
 
-## Deploy
+## Deployment
 
 Firstly, we have to package and install in our particular Maven repository both algorithms. This can be done as follows:
 ```
