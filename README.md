@@ -24,6 +24,50 @@ Blue parameter length: 0
 ...
 ```
 
+## Docker image
+
+Compiling and package:
+```
+mvn clean package
+```
+The JAR is available in `target/kaizten-blue-task-0.0.1-SNAPSHOT.jar`
+
+> The JAR can be executed: `java -jar target/kaizten-blue-task-0.0.1-SNAPSHOT.jar`
+
+Then, the Docker image can be obtained as follows:
+```
+docker build -t christophercei/kaizten-blue-task .
+``` 
+The resulting Docker image is available in the computer:
+```
+docker image ls
+REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
+christophercei/kaizten-blue-task                latest              53b71e601385        14 seconds ago      117MB
+```
+
+## Executing algorithm as Docker container
+
+Once the image of the algorithm is created, we can create Docker containers from it:
+```
+docker run christophercei/kaizten-blue-task
+
+2020-03-16 13:26:28.751  INFO 1 --- [           main] c.k.a.KaiztenBlueTaskApplication         : Starting KaiztenBlueTaskApplication v0.0.1-SNAPSHOT on 42b40ffe3407 with PID 1 (/app.jar started by root in /)
+2020-03-16 13:26:28.754  INFO 1 --- [           main] c.k.a.KaiztenBlueTaskApplication         : No active profile set, falling back to default profiles: default
+2020-03-16 13:26:29.674  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-03-16 13:26:30.035  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-03-16 13:26:30.049 DEBUG 1 --- [           main] o.s.c.t.c.SimpleTaskConfiguration        : Using org.springframework.cloud.task.configuration.DefaultTaskConfigurer TaskConfigurer
+2020-03-16 13:26:30.051 DEBUG 1 --- [           main] o.s.c.t.c.DefaultTaskConfigurer          : No EntityManager was found, using DataSourceTransactionManager
+2020-03-16 13:26:30.189 DEBUG 1 --- [           main] o.s.c.t.r.s.TaskRepositoryInitializer    : Initializing task schema for h2 database
+2020-03-16 13:26:30.454 DEBUG 1 --- [           main] o.s.c.t.r.support.SimpleTaskRepository   : Creating: TaskExecution{executionId=0, parentExecutionId=null, exitCode=null, taskName='blueTask', startTime=Mon Mar 16 13:26:30 GMT 2020, endTime=null, exitMessage='null', externalExecutionId='null', errorMessage='null', arguments=[]}
+2020-03-16 13:26:30.464  INFO 1 --- [           main] c.k.a.KaiztenBlueTaskApplication         : Started KaiztenBlueTaskApplication in 2.145 seconds (JVM running for 2.668)
+EXECUTING BLUE TASK!
+Blue parameter length: 0
+2020-03-16 13:26:30.482 DEBUG 1 --- [           main] o.s.c.t.r.support.SimpleTaskRepository   : Updating: TaskExecution with executionId=1 with the following {exitCode=0, endTime=Mon Mar 16 13:26:30 GMT 2020, exitMessage='null', errorMessage='null'}
+2020-03-16 13:26:30.490  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-03-16 13:26:30.494  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+```
+
+
 # Kaizten Red Task
 
 ## Executing algorithm
@@ -70,16 +114,12 @@ docker image ls
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
 christophercei/kaizten-red-task                latest              53b71e601385        14 seconds ago      117MB
 ```
-Now, we can create Docker containers from this image:
+
+## Executing algorithm as Docker container
+
+Once the image of the algorithm is created, we can create Docker containers from it:
 ```
 docker run christophercei/kaizten-red-task
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::        (v2.1.8.RELEASE)
 
 2020-03-16 13:26:28.751  INFO 1 --- [           main] c.k.a.KaiztenRedTaskApplication          : Starting KaiztenRedTaskApplication v0.0.1-SNAPSHOT on 42b40ffe3407 with PID 1 (/app.jar started by root in /)
 2020-03-16 13:26:28.754  INFO 1 --- [           main] c.k.a.KaiztenRedTaskApplication          : No active profile set, falling back to default profiles: default
