@@ -50,6 +50,15 @@ Red parameter length: 0
 
 ## Deploy
 
+Firstly, we have to package and install in our particular Maven repository both algorithms. This can be done as follows:
+```
+cd kaizten-blue-task
+mvn clean install
+cd ..
+cd kaizten-red-task
+mvn clean install
+```
+
 The REST API is deployed by means of the docker-compose.yml available in the repo:
 
 `docker-compose up`
