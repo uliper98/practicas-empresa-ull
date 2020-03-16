@@ -54,7 +54,7 @@ docker build -t christophercei/kaizten-blue-task .
 ``` 
 The resulting Docker image is available in the computer:
 ```
-docker image ls
+docker images
 REPOSITORY                                     TAG                 IMAGE ID            CREATED             SIZE
 christophercei/kaizten-blue-task                latest              53b71e601385        14 seconds ago      117MB
 ```
@@ -124,7 +124,7 @@ docker build -t christophercei/kaizten-red-task .
 ``` 
 The resulting Docker image is available in the computer:
 ```
-docker image ls
+docker images
 REPOSITORY                                      TAG                 IMAGE ID            CREATED             SIZE
 christophercei/kaizten-red-task                 latest              711d6e0dddd1        19 seconds ago      117MB
 ```
