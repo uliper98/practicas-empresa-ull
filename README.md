@@ -151,6 +151,16 @@ Red parameter length: 0
 2020-03-16 13:26:30.494  INFO 1 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
 ```
 
+# Kaizten Auth
+
+The users created by default and their corresponding API keys are:
+* `kaizten-admin` &rarr; `oqduJ5ZjnzpUHggrtVzAbM0ExpKHmd1ulcxj6InYJSQeyHABFEGIqLhVgmJGfrVs`
+* `kaizten-user-0` &rarr; `TWcus13P6JkjvqxEim298RRQq3rmJrzuzKiziRibrMlbAaMsGthcRY2RrG35uHK2`
+* `kaizten-user-1` &rarr; `gfpdCJeuRbjedqk2M1HJVwRTJ5ACZ2mImssXYBUIxiuD3ogjSPiSJpktflNjLUVx`
+* `kaizten-user-2` &rarr; `uHV348HPlkJPDK9bxSZZWih4k2vIX2msYta6TZ34CjG45QmW5VK0BEC2VMpnq0VA`
+* `kaizten-user-3` &rarr; `mka74p3Jv6YaPfbkDaTXjak2L5VpXwdB3oQfEb78MVoV9M4VvlmX2eSCtnv9dcqF`
+* `kaizten-user-4` &rarr; `RhGbV0114pljnEPD48gxczU5DbingxTwdTmKWVIo1izvsEL1Hps0OC5DLovWXOUZ`
+
 # Kaizten Algorithm
 
 ## Deployment
