@@ -119,11 +119,11 @@ services:
       - "$HOME/docker/volumes/mongodb:/data/db"
 
   # Kaizten configuration server
-  kaizten-configuration-server:
-    image: christophercei/kaizten-configuration-server:latest
-    container_name: kaizten-configuration-server
-    ports:
-      - "8888:8888"
+  #kaizten-configuration-server:
+  #  image: christophercei/kaizten-configuration-server:latest
+  #  container_name: kaizten-configuration-server
+  #  ports:
+  #    - "8888:8888"
   
   # Kaizten auth
   kaizten-auth:
@@ -144,6 +144,7 @@ services:
     environment:
       - KAIZTEN_SCDF_SERVER_URI=http://dataflow-server:9393    
       - SPRING_DATA_MONGODB_URI=mongodb://kaizten-mongo:27017/kaizten-algorithm
+      - KAIZTEN_AUTH_URI=http://kaizten-auth:8080
     depends_on:
       - dataflow-server
     entrypoint: "./wait-for-it.sh -t 180 dataflow-server:9393 -- java -Djava.security.egd=file:/dev/./urandom -jar /app.jar"
