@@ -78,10 +78,10 @@ services:
     command: >
       /bin/sh -c "
         ./wait-for-it.sh -t 180 dataflow-server:9393;
-        wget -qO- 'http://dataflow-server:9393/apps' --post-data='uri=${STREAM_APPS_URI:-https://dataflow.spring.io/kafka-maven-latest&force=true}';
-        echo 'Stream apps imported'
-        wget -qO- 'http://dataflow-server:9393/apps' --post-data='uri=${TASK_APPS_URI:-https://dataflow.spring.io/task-maven-latest&force=true}';
-        echo 'Task apps imported'
+        curl -X DELETE 'http://dataflow-server:9393/apps'
+        curl -X DELETE 'http://dataflow-server:9393/tasks/definitions/kaizten-blue-task'
+        curl -X DELETE 'http://dataflow-server:9393/tasks/definitions/kaizten-red-task'
+        echo 'Tasks deleted' 
         curl -X POST 'http://dataflow-server:9393/apps/task/kaizten-blue-task' -d 'uri=maven://com.kaizten:kaizten-blue-task:0.0.1-SNAPSHOT&force=true'
         curl -X POST 'http://dataflow-server:9393/apps/task/kaizten-red-task' -d 'uri=maven://com.kaizten:kaizten-red-task:0.0.1-SNAPSHOT&force=true'
         echo 'My custom apps imported'
@@ -117,13 +117,6 @@ services:
       - "27017:27017"
     volumes:
       - "$HOME/docker/volumes/mongodb:/data/db"
-
-  # Kaizten configuration server
-  #kaizten-configuration-server:
-  #  image: christophercei/kaizten-configuration-server:latest
-  #  container_name: kaizten-configuration-server
-  #  ports:
-  #    - "8888:8888"
   
   # Watchtower
   watchtower:
