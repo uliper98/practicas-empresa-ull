@@ -171,11 +171,7 @@ chmod 777 script-deploy.sh
 ./script-deploy.sh
 ```
 
-Once the API is deployed it can be accessed as follows:
-
-```
-curl http://localhost:8080/v1/labels
-```  
+Once the API is deployed it can be accessed as indicated [here](https://kaizten.github.io/kaizten-algorithm.html).
 
 ## Stop
 
