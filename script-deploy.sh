@@ -25,4 +25,3 @@ fi
 export DATAFLOW_VERSION=2.4.2.RELEASE
 export SKIPPER_VERSION=2.3.2.RELEASE
 docker-compose up
-
