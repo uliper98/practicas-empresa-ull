@@ -165,20 +165,11 @@ The users created by default and their corresponding API keys are:
 
 ## Deployment
 
-Firstly, we have to package and install in our particular Maven repository both algorithms. This can be done as follows:
 ```
-cd kaizten-blue-task
-mvn clean install
-cd ..
-cd kaizten-red-task
-mvn clean install
+wget https://raw.githubusercontent.com/kaizten/practicas-empresa-ull/master/script-deploy.sh
+chmod 777 script-deploy.sh
+./script-deploy.sh
 ```
-
-The REST API is deployed by means of the docker-compose.yml available in the repo:
-
-`docker-compose up`
-
-It takes a while!
 
 Once the API is deployed it can be accessed as follows:
 
