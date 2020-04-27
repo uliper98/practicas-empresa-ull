@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 clear
 
 if [ -d "practicas-empresa-ull" ]; then
