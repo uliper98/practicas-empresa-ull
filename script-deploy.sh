@@ -19,7 +19,7 @@ cd ..
 if [ -d "$HOME/docker/volumes/mongodb/" ]; then
   sudo rm -rf $HOME/docker/volumes/mongodb/*
 else
-  mkdir $HOME/docker/volumes/mongodb/
+  mkdir -p $HOME/docker/volumes/mongodb/
 fi
 
 export DATAFLOW_VERSION=2.4.2.RELEASE
