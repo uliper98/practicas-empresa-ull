@@ -14,6 +14,7 @@ echo 'Kaizten Red Task installed'
 cd ..
 
 sudo rm -rf $HOME/docker/volumes/mongodb/*
+mkdir $HOME/docker/volumes/mongodb/
 
 export DATAFLOW_VERSION=2.4.2.RELEASE
 export SKIPPER_VERSION=2.3.2.RELEASE
