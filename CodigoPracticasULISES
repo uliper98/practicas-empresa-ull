@@ -1,0 +1,203 @@
+#-------------------------------------------------------------------------------------------------------------------------#
+#Lectura de los datos en insersión en InfluxDB
+
+from pandas import read_csv, DataFrame  
+import matplotlib.pyplot as plt
+
+#Ruta donde tenemos almacenados los datos
+path = " ... "  
+
+#Cargamos los datos 
+df = read_csv(path)
+
+#Mostramos los tres primeros registros
+df.head(3)
+
+
+#Ponemos el tiempo como índice del DataFrame
+df = df.set_index("indice_tiempo")
+
+#Almacenamos en una variable las ventas corrientes
+ventas = df["ventas_precios_corrientes"]
+
+#Representamos gráficamente las ventas 
+plt.figure(figsize=(15,5))
+plt.plot(ventas)
+plt.xticks(rotation=60)
+plt.show()
+
+
+#Importamos el cliente de Influx
+from influxdb import InfluxDBClient
+
+#Importamos la API para escribir datos en Influx
+from influxdb_client.client.write_api import SYNCHRONOUS
+
+#Conectamos con el localhost en el puerto 8086, donde tenemos nuestra base de datos local de InfluxDB
+host = "localhost"
+port = 8086
+client = InfluxDBClient(host=host, port=port)
+
+#Podemos hacer consultas (queries) en Influx de la siguiente forma:
+client.query("show databases;") #Consultamos las bases de datos 
+
+#--------------------------------------------------------------------------------------------------------------------#
+#ARIMA - SARIMAX
+
+import itertools
+from sklearn.metrics import mean_squared_error  #Métricas
+import pandas as pd   #Operaciones con dataframes
+from math import *    #Librería con funcionalidades matemáticas
+import warnings     #Librería para gestionar los "warning"
+warnings.filterwarnings("ignore")  #Ignoramos los "warning"
+
+#Generamos todas las posibles combinaciones para los parámetros del modelo ARIMA, asumiendo que cada parámetro solo toma el valor 0 ó 1
+p = d = q = range(0, 2)
+pdq = list(itertools.product(p, d, q))
+seasonal_pdq = [(x[0], x[1], x[2], 12) for x in pdq]
+
+#Probaremos con todas las combinaciones previamente definidas de los parámetros del modelo SARIMAX y nos quedaremos con aquella que minimice la métrica de error AIC.
+minimo = 9999    #Valor auxiliar para almacenar el mínimo de la métrica
+combi_min = [None, None]   #Aux. para almacenar los parámetros óptimos
+for param in pdq:  #Recorremos los parámetros de la parte ARIMA
+	for param_seasonal in seasonal_pdq:   #Parámetros estacionales
+    	try:  #Por si el modelo falla con alguna combinación de parámetros
+        	mod =    sm.tsa.statespace.SARIMAX(data,order=param,seasonal_order=param_seasonal,enforce_stationarity=False,enforce_invertibility=False)
+        	results = mod.fit()
+
+#Si los nuevos parámetros mejoran el valor AIC anterior, cambiamos el mínimo actual por ese valor AIC y los parámetros de esa iteración pasan a ser la nueva combinación óptima 
+        	if (results.aic < minimo):
+            	minimo = results.aic
+            	combi_min = [param, param_seasonal]
+    	except:
+        	continue
+
+#Usaremos la combinación óptima calculada anteriormente para definir el modelo, que será entrenado a partir de los datos disponibles
+mod = sm.tsa.statespace.SARIMAX(data,
+                            	order=combi_min[0],
+                            	seasonal_order=combi_min[1],
+                            	enforce_stationarity=False,
+                            	enforce_invertibility=False)
+results = mod.fit()  #Entrenamos el modelo y lo almacenamos en "results"
+
+#Obtenemos las predicciones para los 6 últimos meses 
+pred = results.get_prediction(start=pd.to_datetime('2021-08-01 00:00:00+0000'), dynamic=False)
+
+#Recogemos los intervalos de confianza al 95% de confianza para las predicciones 
+pred_ci = pred.conf_int()
+
+#Mostramos los resultados
+plot(data, label = "datos reales")
+plot(pred.predicted_mean, label = "prediccion")
+fill_between(pred_ci.index, pred_ci.iloc[:,0], pred_ci.iloc[:,1], color = "k", alpha = 0.2)   #Rellenamos en gris el int. de conf. de la predic.
+xticks(rotation=30)
+legend()
+show()
+
+#Obtenemos las predicciones para los 6 últimos meses 
+pred = results.get_prediction(start=pd.to_datetime('2021-08-01 00:00:00+0000'), dynamic=False)
+
+#Recogemos los intervalos de confianza al 95% de confianza para las predicciones 
+pred_ci = pred.conf_int()
+
+#Mostramos los resultados
+plot(data, label = "datos reales")
+plot(pred.predicted_mean, label = "prediccion")
+fill_between(pred_ci.index, pred_ci.iloc[:,0], pred_ci.iloc[:,1], color = "k", alpha = 0.2)   #Rellenamos en gris el int. de conf. de la predic.
+xticks(rotation=30)
+legend()
+show()
+
+error = sqrt(mean_squared_error(data["2020-8":], pred.predicted_mean))
+print("Error cuadratico medio:" , error)
+
+#--------------------------------------------------------------------------------------------------------------------#
+#HOLT-WINTERS
+
+#Importamos las librerías necesarias
+
+import pandas as pd   #Para trabajar con dataframes
+from matplotlib import pyplot as plt  #Para graficar los datos
+
+#Importamos funcionalidades de la librería statsmodels para predicción de series temporales
+
+#Función que descompone la serie en sus componentes de tendencia, estacional y aleatoria
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+#Importamos función para el modelo de suavizamiento exponencial simple
+from statsmodels.tsa.holtwinters import SimpleExpSmoothing 
+
+#Importamos la función para llevar a cabo el método Holt-Winters
+from statsmodels.tsa.holtwinters import ExponentialSmoothing
+
+import warnings
+warnings.filterwarnings("ignore")  #Ignoramos incómodas advertencias
+
+#Almacenamos en un dataframe de Pandas los datos almacenados en InfluxDB
+data = pd.DataFrame(
+        client.query("select  * from supermercado").get_points())
+
+#Establecemos como índice la columna del tiempo (fecha del dato)
+data.index = pd.to_datetime(data["time"])
+
+#Borramos la columna "time"
+data = data.drop(["time"], axis=1)["beneficio"]
+
+#Utilizamos la función para obtener las componentes de la serie y las mostramos con la función plot
+decomposicion = seasonal_decompose(data,model="multiplicative")
+decomposicion.plot()
+
+#Pasamos a entrenar un modelo de suavizamiento exponencial simple
+
+alpha = 1/3   #Establecemos el valor de la constante de suavización                             exponencial para el nivel, que será el parámetro que le pasemos al modelo
+
+#Pasamos los datos al modelo, lo entrenamos y almacenamos los valores predichos en la variable HWSE 
+HWSE = SimpleExpSmoothing(data).fit(smoothing_level=alpha,
+                      optimized=False,use_brute=True).fittedvalues
+
+#Representamos una comparativa entre los datos predichos por el modelo y los valores reales 
+plt.plot(HWSE, "-r", label = "modelo")
+plt.plot(data, "-b", label = "realidad")
+plt.legend()
+plt.title("Holt-Winters Single Exponential Smoothing")
+plt.show()
+
+#Ahora, entrenamos un modelo de suavizamiento exponencial doble. La gran diferencia respecto al simple es que este presenta la componente tendencia. Lo haremos tanto para la forma aditiva como para la forma multiplicativa
+
+HWSEAdd = ExponentialSmoothing(data,trend="add").fit().fittedvalues
+HWSEMul = ExponentialSmoothing(data,trend="mul").fit().fittedvalues
+
+plt.plot(data, label="Datos reales")
+plt.plot(HWSEAdd, label="Modelo aditivo")
+plt.plot(HWSEMul, label="Modelo multiplicativo")
+plt.legend()
+plt.title("Holt-Winter Doble Exponencial: Aditivo y Multiplicativo")
+plt.show()
+
+#Finalmente, entrenamos el modelo Holt-Winter de suavizamiento exponencial triple que, además de presentar tendencia, también tiene componente estacional. 
+
+#Este modelo tiene un parámetro adicional: el número de periodos que constituyen un ciclo estacional, en este caso doce meses (un año)
+
+HWSEAdd=ExponentialSmoothing(data,trend="add",seasonal="add",                 seasonal_periods=12).fit().fittedvalues
+
+HWSEMul=ExponentialSmoothing(data,trend="mul",seasonal="mul", seasonal_periods=12).fit().fittedvalues
+
+plt.plot(data, label="Datos reales")
+
+#Entrenamos un modelo Holt-Winters aditivo
+fit_add = ExponentialSmoothing(train, trend ="add", seasonal = "add", seasonal_periods = 12).fit()
+#Predicciones del modelo aditivo
+predicciones_add = fit_add.forecast(6)
+
+#Entrenamos un modelo Holt-Winters multiplicativo
+fit_mul = ExponentialSmoothing(train, trend ="mul", seasonal = "mul", seasonal_periods = 12).fit()
+#Predicciones del modelo multiplicativo
+predicciones_mul = fit_mul.forecast(6)
+
+#Representamos gráficamente los resultados
+plt.plot(train, label="Datos de entrenamiento")
+plt.plot(test, label="Datos de prueba")
+plt.plot(predicciones_add, label="Predicciones")
+plt.legend()
+plt.title("Predicciones con el modelo aditivo")
+plt.show()
